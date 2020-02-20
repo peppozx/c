@@ -47,18 +47,18 @@ void main()
 				continue;
 			}
 
-		if (S_ISREG(sb.st_mode)) {
-			/* Regular file, so add to watch list */
-			if ((watchfd = inotify_add_watch(notifyfd, watchname, IN_MODIFY | IN_DELETE_SELF)) < 0) {
-				printf("error adding watch for %s\n", watchname);
-			}else {
-				printf("added %s to watch list on descriptor %d\n", watchname, watchfd);
-				strcpy(watchednames[watchfd], watchname);
-			}	
-		} else {
-				/* Probably a directory */
-				printf("%s is not a refular file, ignored\n", watchname);
-		}
+			if (S_ISREG(sb.st_mode)) {
+				/* Regular file, so add to watch list */
+				if ((watchfd = inotify_add_watch(notifyfd, watchname, IN_MODIFY | IN_DELETE_SELF)) < 0) {
+					printf("error adding watch for %s\n", watchname);
+				}else {
+					printf("added %s to watch list on descriptor %d\n", watchname, watchfd);
+					strcpy(watchednames[watchfd], watchname);
+				}	
+			} else {
+					/* Probably a directory */
+					printf("%s is not a refular file, ignored\n", watchname);
+			}
 		}
 
 		/* All our watches are in place, so just read an report events */
