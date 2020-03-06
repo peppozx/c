@@ -118,6 +118,8 @@ main:
 	leaq	.LC6(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
+	movl	$0, %eax
+	movl	$42, (%rax)
 	movl	$10, %edi
 	movl	$0, %eax
 	call	sleep@PLT

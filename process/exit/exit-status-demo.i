@@ -1906,6 +1906,8 @@ int main()
             {
 
                 printf("child child running -- PID is %d\n", getpid());
+
+                *(int *)0 = 42;
                 sleep(10);
                 exit(3);
             }

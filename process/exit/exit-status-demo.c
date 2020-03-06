@@ -40,6 +40,8 @@ int main()
             {
                 /* Child */
                 printf("child child running -- PID is %d\n", getpid());
+                //Force signal
+                *(int *)0 = 42;
                 sleep(10);
                 exit(3);
             }
