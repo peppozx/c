@@ -1,0 +1,1 @@
+gcc -pthread --save-temps thread.c -o thread
