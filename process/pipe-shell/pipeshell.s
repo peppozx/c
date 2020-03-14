@@ -4,7 +4,7 @@
 .LC0:
 	.string	"> "
 .LC1:
-	.string	" \t"
+	.string	"  \t"
 .LC2:
 	.string	" | "
 	.text
@@ -35,7 +35,7 @@ prompt_and_parse:
 	testl	%eax, %eax
 	jne	.L2
 	movl	$-1, %eax
-	jmp	.L1
+	jmp	.L3
 .L2:
 	movq	-24(%rbp), %rbx
 	leaq	8(%rbx), %rax
@@ -44,16 +44,8 @@ prompt_and_parse:
 	leaq	line.3011(%rip), %rdi
 	call	strtok@PLT
 	movq	%rax, (%rbx)
-	nop
-	leaq	.LC1(%rip), %rsi
-	movl	$0, %edi
-	call	strtok@PLT
-	movq	-24(%rbp), %rdx
-	movq	%rax, (%rdx)
-	movq	-24(%rbp), %rax
-	movq	(%rax), %rax
-	testq	%rax, %rax
-	je	.L9
+	jmp	.L4
+.L7:
 	movq	-24(%rbp), %rax
 	movq	(%rax), %rax
 	leaq	.LC2(%rip), %rsi
@@ -64,6 +56,7 @@ prompt_and_parse:
 	movq	-24(%rbp), %rax
 	movq	$0, (%rax)
 	nop
+.L6:
 	movq	-32(%rbp), %rbx
 	leaq	8(%rbx), %rax
 	movq	%rax, -32(%rbp)
@@ -73,16 +66,23 @@ prompt_and_parse:
 	movq	%rax, (%rbx)
 	movq	(%rbx), %rax
 	testq	%rax, %rax
-	je	.L10
-	movl	$-1, %eax
-	jmp	.L1
-.L10:
-	addq	$8, -24(%rbp)
-.L5:
+	jne	.L6
 	movl	$1, %eax
-	jmp	.L1
-.L9:
-.L1:
+	jmp	.L3
+.L5:
+	addq	$8, -24(%rbp)
+.L4:
+	leaq	.LC1(%rip), %rsi
+	movl	$0, %edi
+	call	strtok@PLT
+	movq	-24(%rbp), %rdx
+	movq	%rax, (%rdx)
+	movq	-24(%rbp), %rax
+	movq	(%rax), %rax
+	testq	%rax, %rax
+	jne	.L7
+	movl	$1, %eax
+.L3:
 	addq	$24, %rsp
 	popq	%rbx
 	popq	%rbp
@@ -93,6 +93,12 @@ prompt_and_parse:
 	.size	prompt_and_parse, .-prompt_and_parse
 	.section	.rodata
 .LC3:
+	.string	"upstream: %s\n"
+.LC4:
+	.string	"downstream: %s\n"
+.LC5:
+	.string	"oaskdpasdkopsad"
+.LC6:
 	.string	"%s: not found\n"
 	.text
 	.globl	main
@@ -110,14 +116,27 @@ main:
 	movq	%fs:40, %rax
 	movq	%rax, -8(%rbp)
 	xorl	%eax, %eax
-	jmp	.L12
-.L17:
+	jmp	.L9
+.L14:
+	movq	-336(%rbp), %rax
+	movq	%rax, %rsi
+	leaq	.LC3(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
+	movq	-176(%rbp), %rax
+	movq	%rax, %rsi
+	leaq	.LC4(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
 	movq	-176(%rbp), %rax
 	testq	%rax, %rax
-	jne	.L13
+	jne	.L10
 	call	fork@PLT
 	testl	%eax, %eax
-	jne	.L14
+	jne	.L11
+	leaq	.LC5(%rip), %rdi
+	movl	$0, %eax
+	call	printf@PLT
 	movq	-336(%rbp), %rax
 	leaq	-336(%rbp), %rdx
 	movq	%rdx, %rsi
@@ -125,24 +144,24 @@ main:
 	call	execvp@PLT
 	movq	-336(%rbp), %rax
 	movq	%rax, %rsi
-	leaq	.LC3(%rip), %rdi
+	leaq	.LC6(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
 	movl	$1, %edi
 	call	exit@PLT
-.L14:
+.L11:
 	movl	$0, %edi
 	movl	$0, %eax
 	call	wait@PLT
-	jmp	.L12
-.L13:
+	jmp	.L9
+.L10:
 	leaq	-344(%rbp), %rax
 	movq	%rax, %rdi
 	movl	$0, %eax
 	call	pipe@PLT
 	call	fork@PLT
 	testl	%eax, %eax
-	jne	.L15
+	jne	.L12
 	movl	-340(%rbp), %eax
 	movl	$1, %esi
 	movl	%eax, %edi
@@ -159,15 +178,15 @@ main:
 	call	execvp@PLT
 	movq	-336(%rbp), %rax
 	movq	%rax, %rsi
-	leaq	.LC3(%rip), %rdi
+	leaq	.LC6(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
 	movl	$1, %edi
 	call	exit@PLT
-.L15:
+.L12:
 	call	fork@PLT
 	testl	%eax, %eax
-	jne	.L16
+	jne	.L13
 	movl	-344(%rbp), %eax
 	movl	$0, %esi
 	movl	%eax, %edi
@@ -184,12 +203,12 @@ main:
 	call	execvp@PLT
 	movq	-176(%rbp), %rax
 	movq	%rax, %rsi
-	leaq	.LC3(%rip), %rdi
+	leaq	.LC6(%rip), %rdi
 	movl	$0, %eax
 	call	printf@PLT
 	movl	$1, %edi
 	call	exit@PLT
-.L16:
+.L13:
 	movl	-344(%rbp), %eax
 	movl	%eax, %edi
 	movl	$0, %eax
@@ -204,20 +223,20 @@ main:
 	movl	$0, %edi
 	movl	$0, %eax
 	call	wait@PLT
-.L12:
+.L9:
 	leaq	-176(%rbp), %rdx
 	leaq	-336(%rbp), %rax
 	movq	%rdx, %rsi
 	movq	%rax, %rdi
 	call	prompt_and_parse
 	testl	%eax, %eax
-	jg	.L17
+	jg	.L14
 	movl	$0, %eax
 	movq	-8(%rbp), %rcx
 	xorq	%fs:40, %rcx
-	je	.L19
+	je	.L16
 	call	__stack_chk_fail@PLT
-.L19:
+.L16:
 	leave
 	.cfi_def_cfa 7, 8
 	ret

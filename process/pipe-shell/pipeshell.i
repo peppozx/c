@@ -2100,15 +2100,15 @@ int prompt_and_parse(char **u, char **d)
 # 22 "pipeshell.c" 3 4
                   ((void *)0)
 # 22 "pipeshell.c"
-                      )
+                      ) {
    return -1;
-
- *u++ = strtok(line, " \t");
- while ( *u = strtok(
+ }
+ *u++ = strtok(line, "  \t");
+ while (*u = strtok(
 # 26 "pipeshell.c" 3 4
-                    ((void *)0)
+                   ((void *)0)
 # 26 "pipeshell.c"
-                        , " \t"))
+                       , "  \t"))
  {
   if (strcmp(*u, " | ") == 0)
   {
@@ -2121,14 +2121,13 @@ int prompt_and_parse(char **u, char **d)
 # 31 "pipeshell.c" 3 4
                       ((void *)0)
 # 31 "pipeshell.c"
-                          , " \t"))
-   {
-    return -1;
-   }
-   u++;
+                          , "  \t"))
+                     ;
+   return 1;
   }
-  return 1;
+  u++;
  }
+ return 1;
 }
 
 main()
@@ -2139,16 +2138,19 @@ main()
 
  while(prompt_and_parse(upstream, downstream) > 0)
  {
+  printf("upstream: %s\n", upstream[0]);
+  printf("downstream: %s\n", downstream[0]);
 
 
 
   if (downstream[0] == 
-# 52 "pipeshell.c" 3 4
+# 53 "pipeshell.c" 3 4
                       ((void *)0)
-# 52 "pipeshell.c"
+# 53 "pipeshell.c"
                           ) {
    if (fork() == 0)
    {
+    printf("oaskdpasdkopsad");
 
     execvp(upstream[0], upstream);
     printf("%s: not found\n", upstream[0]);

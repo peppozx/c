@@ -19,23 +19,22 @@ int prompt_and_parse(char **u, char **d)
 
 	d[0] = NULL;
 	printf("> ");
-	if (gets(line) == NULL)
+	if (gets(line) == NULL) {
 			return -1;
-
-	*u++ = strtok(line, " \t");
-	while ( *u = strtok(NULL, " \t"))
+	}
+	*u++ = strtok(line, "  \t");
+	while (*u = strtok(NULL, "  \t"))
 	{
 		if (strcmp(*u, " | ") == 0)
 		{
 			*u = NULL;
-			while(*d++ = strtok(NULL, " \t"))
-			{
-				return -1;
-			}
-			u++;
+			while(*d++ = strtok(NULL, "  \t"))
+				/* Empty body */ ;
+			return 1;
 		}
-		return 1;
+		u++;
 	}
+	return 1;
 }
 
 main()
@@ -46,12 +45,15 @@ main()
 	/* Main command loop */
 	while(prompt_and_parse(upstream, downstream) > 0)
 	{
+		printf("upstream: %s\n", upstream[0]);
+		printf("downstream: %s\n", downstream[0]);
 		/* If downstream[0] is NULL, there is no pipeline
 			so we just execute the upstream command.
 		*/
 		if (downstream[0] == NULL) {
 			if (fork() == 0)
 			{
+				printf("oaskdpasdkopsad");
 				/* Child */
 				execvp(upstream[0], upstream);
 				printf("%s: not found\n", upstream[0]);
